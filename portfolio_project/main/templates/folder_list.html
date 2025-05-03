@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h2>Carpetas</h2>
+  <form method="post">{% csrf_token %}
+    <div class="mb-3">
+      {{ form.name.label_tag }}
+      {{ form.name }}
+    </div>
+    <div class="mb-3">
+      {{ form.description.label_tag }}
+      {{ form.description }}
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Crear Carpeta</button>
+  </form>
+
+  <hr>
+  <table class="table mt-3" id="folder-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for folder in folders %}
+      <tr data-id="{{ folder.id }}">
+        <td class="name">{{ folder.name }}</td>
+        <td class="description">{{ folder.description }}</td>
+        <td>
+          <button type="button" class="btn btn-sm btn-warning edit-btn" data-mode="edit">Editar</button>
+          <button type="button" class="btn btn-sm btn-danger delete-btn">Eliminar</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+// CSRF token helper
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    document.cookie.split(';').forEach(cookie => {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+      }
+    });
+  }
+  return cookieValue;
+}
+const csrfToken = getCookie('csrftoken');
+
+// Event delegation for edit and delete
+const table = document.getElementById('folder-table');
+table.addEventListener('click', function(e) {
+  const btn = e.target;
+  const row = btn.closest('tr');
+  const id = row.dataset.id;
+
+  // Delete
+  if (btn.classList.contains('delete-btn')) {
+    fetch(`/api/folders/${id}/`, {
+      method: 'DELETE', headers: {'X-CSRFToken': csrfToken}
+    }).then(res => { if (res.ok) row.remove(); });
+  }
+
+  // Edit / Save
+  if (btn.classList.contains('edit-btn')) {
+    const mode = btn.dataset.mode;
+    const nameCell = row.querySelector('.name');
+    const descCell = row.querySelector('.description');
+
+    if (mode === 'edit') {
+      // Switch to save mode
+      const currName = nameCell.textContent.trim();
+      const currDesc = descCell.textContent.trim();
+      nameCell.innerHTML = `<input class='form-control name-input' value='${currName}'>`;
+      descCell.innerHTML = `<textarea class='form-control desc-input' rows='2'>${currDesc}</textarea>`;
+      btn.textContent = 'Guardar';
+      btn.dataset.mode = 'save';
+    } else {
+      // Save changes
+      const newName = row.querySelector('.name-input').value.trim();
+      const newDesc = row.querySelector('.desc-input').value.trim();
+      if (!newName) {
+        alert('El nombre no puede estar vacío');
+        return;
+      }
+      fetch(`/api/folders/${id}/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({ name: newName, description: newDesc })
+      })
+      .then(res => {
+        if (!res.ok) return res.json().then(err => { throw err; });
+        return res.json();
+      })
+      .then(data => {
+        nameCell.textContent = data.name;
+        descCell.textContent = data.description;
+        btn.textContent = 'Editar';
+        btn.dataset.mode = 'edit';
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error al actualizar. Ver consola.');
+      });
+    }
+  }
+});
+</script>
+
+{% endblock %}

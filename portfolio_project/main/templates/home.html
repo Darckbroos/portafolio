@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section id="summary">
+  <h2>Resumen Profesional</h2>
+  <p>Ingeniero en Ejecución Informática con experiencia en desarrollo web Full Stack, bots de trading en MQL5 y automatización. A lo largo de mi trayectoria he trabajado en empresas de distintos rubros desarrollando APIs, aplicaciones web, integraciones ETL y soluciones de ciberseguridad.</p>
+</section>
+
+<section id="experience">
+  <h2>Experiencia</h2>
+  <p>Con más de 4 años de trayectoria en la industria tecnológica, he liderado y participado en equipos de desarrollo en empresas de distintos sectores, diseñando soluciones web Full Stack, arquitecturas API, proyectos de automatización y bots de trading.</p>
+  <ul>
+    {% for exp in experiences %}
+      <li>
+        <strong>{{ exp.role }}</strong> en {{ exp.company }} ({{ exp.start_date|date:"Y" }} – {% if exp.end_date %}{{ exp.end_date|date:"Y" }}{% else %}Presente{% endif %})
+        <p>{{ exp.description }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section id="projects">
+  <h2>Proyectos Destacados</h2>
+  <ul>
+    <li><strong>Planix</strong> – Plataforma de blogging profesional para servicios de contenidos.</li>
+    <li><strong>Alpha MQ5</strong> – Bot algorítmico en MQL5 para el Nasdaq 100.</li>
+    <li><strong>Bot Bolsa de Mercado</strong> – Sistema de trading automatizado con MetaTrader.</li>
+    <li><strong>Automatismos Lau</strong> – Desarrollo de APIs y automatizaciones (Python, ReactJS).</li>
+    <li><strong>Zen Latam Limitada</strong> – Integración ETL con Pentaho y desarrollo de DTE (Python, Bootstrap, HTML).</li>
+    <li><strong>Consultora DataOn</strong> – QA Automation y análisis de servidores (Python, Ubuntu Server).</li>
+    <li><strong>Bcargo Mobility</strong> – Diseño y desarrollo web (HTML, CSS, JavaScript).</li>
+    {% for p in projects %}
+      <li>
+        <strong>{{ p.title }}</strong><br>
+        {{ p.description }}<br>
+        {% if p.link %}<a href="{{ p.link }}" target="_blank">En línea</a>{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section id="technologies">
+  <h2>Sobre este Portafolio</h2>
+  <p>Este portafolio está construido con Django como framework web, Python como lenguaje de programación, Bootstrap y CSS personalizado para el estilo, y utiliza SQLite como base de datos por su ligereza y facilidad de configuración.</p>
+</section>
+
+<section id="technologies">
+  <h2>Herramientas y Tecnologías</h2>
+  <ul>
+    <li><strong>Lenguajes:</strong> Python, JavaScript, PHP, SQL, C#</li>
+    <li><strong>Frameworks y Bibliotecas:</strong> Django, ReactJS, Bootstrap, Pentaho, Ruby on Rails</li>
+    <li><strong>Bases de Datos:</strong> PostgreSQL, MySQL, SQL Server, SQLite</li>
+    <li><strong>Herramientas:</strong> Git, Docker, Linux (Ubuntu), Windows Server, Kali Linux</li>
+    <li><strong>Otras:</strong> Hacking Ético, COBIT, NIST, QA Automation</li>
+  </ul>
+</section>
+
+
+
+{% endblock %}

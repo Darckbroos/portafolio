@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center mt-5">
+    <div class="col-12 col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-center mb-4">Regístrate</h2>
+          {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+              <strong>¡Error!</strong> Por favor corrige los campos indicados.
+            </div>
+          {% endif %}
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="row mb-3">
+              <label for="id_username" class="col-sm-4 col-form-label text-end">Nombre de usuario</label>
+              <div class="col-sm-8">
+                {{ form.username }}
+                {% if form.username.errors %}
+                  <div class="text-danger">{{ form.username.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="id_password1" class="col-sm-4 col-form-label text-end">Contraseña</label>
+              <div class="col-sm-8">
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                  <div class="text-danger">{{ form.password1.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="id_password2" class="col-sm-4 col-form-label text-end">Confirmar contraseña</label>
+              <div class="col-sm-8">
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                  <div class="text-danger">{{ form.password2.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success w-100 rounded-pill">Crear cuenta</button>
+          </form>
+          <div class="text-center mt-3">
+            <a href="{% url 'login' %}" class="btn btn-outline-success rounded-pill">¿Ya tienes cuenta? Inicia sesión</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
