@@ -6,7 +6,9 @@
   {% load static %}
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  
 </head>
 <body>
   <!-- Navbar -->
@@ -47,18 +49,35 @@
         </ul>
         <a class="btn btn-info" href="{% static 'cv/Kalbert_Contreras_CV.pdf' %}" target="_blank" role="button">Ver CV</a>
       </div>
+      
     </div>
   </nav>
+  <!-- Contenedor temático: aquí aplica claro/oscuro/matrix -->
+  <div id="themed-container" data-theme="light">
 
-  <main class="container my-4">
-    {% block content %}{% endblock %}
-  </main>
+    <!-- Toggle debajo del nav -->
+    <button id="theme-toggle" title="Cambiar tema">🌙</button>
 
-  <footer class="bg-dark text-white text-center py-3">
-    &copy; 2025 Kalbert Contreras => frameworks Djangos
-  </footer>
-
+    <!-- Todo lo que sigue: main, sections, footer -->
+    <main class="container my-4">
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="bg-dark text-white text-center py-3">
+      &copy; 2025 Kalbert Contreras
+    </footer>
+  </div>
   <!-- Bootstrap JS -->
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 </html>
+<!-- Typed.js -->
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+
+<!-- AOS JS -->
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+
+<script src="{% static 'js/theme-toggle.js' %}"></script>

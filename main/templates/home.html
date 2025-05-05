@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<section id="summary">
+<section id="summary" data-aos="fade-down" data-aos-duration="1000">
+  <h1>Hola un gusto en saludarte, soy Kalbert Contreras C.</h1>
+  <h2 id="typing-text"></h2>
   <h2>Resumen Profesional</h2>
   <p>Ingeniero en Ejecución Informática con experiencia en desarrollo web Full Stack, bots de trading en MQL5 y automatización. A lo largo de mi trayectoria he trabajado en empresas de distintos rubros desarrollando APIs, aplicaciones web, integraciones ETL y soluciones de ciberseguridad.</p>
 </section>
 
-<section id="experience">
+<section id="experience" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
   <h2>Experiencia</h2>
   <p>Con más de 4 años de trayectoria en la industria tecnológica, he liderado y participado en equipos de desarrollo en empresas de distintos sectores, diseñando soluciones web Full Stack, arquitecturas API, proyectos de automatización y bots de trading.</p>
   <ul>
@@ -19,18 +21,20 @@
   </ul>
 </section>
 
-<section id="projects">
+<section id="projects" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="600">
   <h2>Proyectos Destacados</h2>
   <ul>
-    <li><strong>Planix</strong> – Plataforma de blogging profesional para servicios de contenidos.</li>
-    <li><strong>Alpha MQ5</strong> – Bot algorítmico en MQL5 para el Nasdaq 100.</li>
-    <li><strong>Bot Bolsa de Mercado</strong> – Sistema de trading automatizado con MetaTrader.</li>
-    <li><strong>Automatismos Lau</strong> – Desarrollo de APIs y automatizaciones (Python, ReactJS).</li>
-    <li><strong>Zen Latam Limitada</strong> – Integración ETL con Pentaho y desarrollo de DTE (Python, Bootstrap, HTML).</li>
-    <li><strong>Consultora DataOn</strong> – QA Automation y análisis de servidores (Python, Ubuntu Server).</li>
-    <li><strong>Bcargo Mobility</strong> – Diseño y desarrollo web (HTML, CSS, JavaScript).</li>
+    <li data-aos="zoom-in-up" data-aos-duration="700" data-aos-delay="800" ><strong>Planix</strong> – Plataforma de blogging profesional para servicios de contenidos.</li>
+    <li data-aos="zoom-in-up" data-aos-duration="700" data-aos-delay="800"><strong>Alpha MQ5</strong> – Bot algorítmico en MQL5 para el Nasdaq 100.</li>
+    <li data-aos="zoom-in-up" data-aos-duration="700" data-aos-delay="800"><strong>Bot Bolsa de Mercado</strong> – Sistema de trading automatizado con MetaTrader.</li>
+    <li data-aos="zoom-in-up" data-aos-duration="700" data-aos-delay="800"><strong>Automatismos Lau</strong> – Desarrollo de APIs y automatizaciones (Python, ReactJS).</li>
+    <li data-aos="zoom-in-up" data-aos-duration="700" data-aos-delay="800"><strong>Zen Latam Limitada</strong> – Integración ETL con Pentaho y desarrollo de DTE (Python, Bootstrap, HTML).</li>
+    <li data-aos="zoom-in-up" data-aos-duration="700" data-aos-delay="800"><strong>Consultora DataOn</strong> – QA Automation y análisis de servidores (Python, Ubuntu Server).</li>
+    <li data-aos="zoom-in-up" data-aos-duration="700" data-aos-delay="800"><strong>Bcargo Mobility</strong> – Diseño y desarrollo web (HTML, CSS, JavaScript).</li>
     {% for p in projects %}
-      <li>
+      <li data-aos="zoom-in-up"
+      data-aos-duration="700"
+      data-aos-delay="{{ forloop.counter0|add:'800' }}">
         <strong>{{ p.title }}</strong><br>
         {{ p.description }}<br>
         {% if p.link %}<a href="{{ p.link }}" target="_blank">En línea</a>{% endif %}
@@ -39,12 +43,12 @@
   </ul>
 </section>
 
-<section id="technologies">
+<section id="technologies" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="600">
   <h2>Sobre este Portafolio</h2>
-  <p>Este portafolio está construido con Django como framework web, Python como lenguaje de programación, Bootstrap y CSS personalizado para el estilo, y utiliza SQLite como base de datos por su ligereza y facilidad de configuración.</p>
+  <p>Este portafolio está construido con Django como framework web, Python como lenguaje de programación, Bootstrap y CSS personalizado para el estilo, y utiliza PostgreSQL como base de datos por su ligereza y facilidad de configuración.</p>
 </section>
 
-<section id="technologies">
+<section id="technologies" data-aos="fade-up">
   <h2>Herramientas y Tecnologías</h2>
   <ul>
     <li><strong>Lenguajes:</strong> Python, JavaScript, PHP, SQL, C#</li>
@@ -58,3 +62,14 @@
 
 
 {% endblock %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    new Typed('#typing-text', {
+      strings: ['Full-Stack Developer', 'Django Lover', 'Open-Source Enthusiast'],
+      typeSpeed: 80,
+      backSpeed: 50,
+      loop: true
+    });
+  });
+</script>
