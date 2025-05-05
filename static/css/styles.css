@@ -1,0 +1,93 @@
+/*──────────────────────────────────────────────────────────
+  Variables de color para cada tema
+───────────────────────────────────────────────────────────*/
+:root {
+  --bg-light:       #ffffff;
+  --fg-light:       #000000;
+  --primary-light:  #0dcaf0;
+
+  --bg-dark:        #222222;
+  --fg-dark:        #ffffff;
+  --primary-dark:   #343a40;
+
+  --bg-matrix:      #000000;
+  --fg-matrix:      #00ff00;
+  --primary-matrix: #198754;
+}
+
+/*──────────────────────────────────────────────────────────
+  Aplica tema al contenedor (NO al nav)
+───────────────────────────────────────────────────────────*/
+#themed-container[data-theme="light"] {
+  background: var(--bg-light);
+  color:      var(--fg-light);
+}
+#themed-container[data-theme="dark"] {
+  background: var(--bg-dark);
+  color:      var(--fg-dark);
+}
+#themed-container[data-theme="matrix"] {
+  background: transparent;  /* para ver canvas */
+  color:      var(--fg-matrix);
+}
+
+/* Transiciones suaves */
+#themed-container {
+  position: relative;       /* para el canvas */
+  transition: background 0.3s, color 0.3s;
+  z-index: 1;
+}
+
+/*──────────────────────────────────────────────────────────
+  Canvas Matrix: ocupa TODO EL ANCHO DEL CONTENEDOR DEBAJO
+───────────────────────────────────────────────────────────*/
+#matrix-canvas {
+  display: none;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;              /* detrás del contenido */
+}
+#themed-container[data-theme="matrix"] #matrix-canvas {
+  display: block;
+}
+
+/*──────────────────────────────────────────────────────────
+  Dropdown button: su texto y fondo se actualizan por JS
+───────────────────────────────────────────────────────────*/
+#theme-button {
+  transition: color 0.3s, background 0.3s;
+}
+
+/* Colorea enlaces y botones DENTRO del tema */
+#themed-container[data-theme="light"] a,
+#themed-container[data-theme="light"] button {
+  color: var(--primary-light) !important;
+}
+#themed-container[data-theme="dark"] a,
+#themed-container[data-theme="dark"] button {
+  color: var(--primary-dark) !important;
+}
+#themed-container[data-theme="matrix"] a,
+#themed-container[data-theme="matrix"] button {
+  color: var(--primary-matrix) !important;
+}
+
+/* Texto del botón tema según tema */
+#themed-container[data-theme="light"]  #theme-button { color: var(--fg-light) !important; }
+#themed-container[data-theme="dark"]   #theme-button { color: var(--fg-dark)  !important; }
+#themed-container[data-theme="matrix"] #theme-button { color: var(--fg-matrix)!important; }
+
+
+/*──────────────────────────────────────────────────────────
+  NAV: siempre claro (nunca se ve afectado)
+───────────────────────────────────────────────────────────*/
+nav {
+  background: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+nav .nav-link,
+nav h4, nav h6 {
+  color: #000000 !important;
+}

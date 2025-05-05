@@ -7,10 +7,12 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   
 </head>
 <body>
+  
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -52,21 +54,41 @@
       
     </div>
   </nav>
-  <!-- Contenedor temático: aquí aplica claro/oscuro/matrix -->
+  <!-- Theme selector dropdown -->
+  <!-- ── CONTENEDOR TEMÁTICO (bajo el nav) ─────────────── -->
   <div id="themed-container" data-theme="light">
 
-    <!-- Toggle debajo del nav -->
-    <button id="theme-toggle" title="Cambiar tema">🌙</button>
+    <!-- Matrix Canvas (oculto hasta modo matrix) -->
+    <canvas id="matrix-canvas"></canvas>
 
-    <!-- Todo lo que sigue: main, sections, footer -->
+    <!-- Selector de tema -->
+    <div class="container-fluid my-2">
+      <div class="btn-group" id="theme-dropdown">
+        <button id="theme-button"
+                type="button"
+                class="btn btn-info dropdown-toggle"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+          Claro
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#" data-theme="light">Claro</a></li>
+          <li><a class="dropdown-item" href="#" data-theme="dark">Oscuro</a></li>
+          <li><a class="dropdown-item" href="#" data-theme="matrix">Matrix</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Contenido principal -->
     <main class="container my-4">
       {% block content %}{% endblock %}
     </main>
+
+    <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3">
       &copy; 2025 Kalbert Contreras
     </footer>
   </div>
-  <!-- Bootstrap JS -->
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 </html>
@@ -80,4 +102,5 @@
   AOS.init();
 </script>
 
-<script src="{% static 'js/theme-toggle.js' %}"></script>
+<script src="{% static 'js/matrix.js' %}"></script>
+<script src="{% static 'js/theme-dropdown.js' %}"></script>
