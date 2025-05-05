@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'portfolio_project.wsgi.application'
 
 # Sólo reconozca la variable si viene definida (p.ej. en Production)
 DATABASE_URL = os.getenv('DATABASE_URL')
-
+print(DATABASE_URL)
 if DATABASE_URL:
     # En Railway, DATABASE_URL apunta a postgres.railway.internal
     DATABASES = {
