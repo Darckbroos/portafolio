@@ -75,7 +75,8 @@
 #themed-container[data-theme="light"]  #theme-button { color: var(--fg-light) !important; }
 #themed-container[data-theme="dark"]   #theme-button { color: var(--fg-dark)  !important; }
 #themed-container[data-theme="matrix"] #theme-button { color: var(--fg-matrix)!important; }
-
+#themed-container[data-theme="matrix"] a,
+#themed-container[data-theme="dark"] a { color:#da0c0c !important; }
 
 /*──────────────────────────────────────────────────────────
   NAV: siempre claro (nunca se ve afectado)
@@ -88,3 +89,4 @@ nav .nav-link,
 nav h4, nav h6 {
   color: #000000 !important;
 }
+
