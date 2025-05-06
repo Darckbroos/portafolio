@@ -28,7 +28,16 @@ class Project(models.Model):
 class Folder(models.Model):
     name        = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+    start_date  = models.DateField(null=True, blank=True)
+    end_date    = models.DateField(null=True, blank=True)
     created_at  = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
+
+class FolderImage(models.Model):
+    folder = models.ForeignKey(Folder, on_delete=models.CASCADE, related_name='images')
+    image  = models.ImageField(upload_to='folder_images/')
+
+    def __str__(self):
+        return f"Imagen {self.id} de {self.folder.name}"

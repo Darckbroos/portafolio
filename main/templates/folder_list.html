@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
   <h2>Carpetas</h2>
-  <form method="post">{% csrf_token %}
+  <form method="post" enctype="multipart/form-data">{% csrf_token %}
     <div class="mb-3">
       {{ form.name.label_tag }}
       {{ form.name }}
@@ -10,6 +10,18 @@
     <div class="mb-3">
       {{ form.description.label_tag }}
       {{ form.description }}
+    </div>
+    <div class="mb-3">
+      {{ form.start_date.label_tag }}
+      {{ form.start_date }}
+    </div>
+    <div class="mb-3">
+      {{ form.end_date.label_tag }}
+      {{ form.end_date }}
+    </div>
+    <div class="mb-3">
+      {{ form.images.label_tag }}
+      {{ form.images }}
     </div>
     <button type="submit" class="btn btn-primary mt-2">Crear Carpeta</button>
   </form>
@@ -28,6 +40,13 @@
       <tr data-id="{{ folder.id }}">
         <td class="name">{{ folder.name }}</td>
         <td class="description">{{ folder.description }}</td>
+        <td>
+          Inicio: {{ folder.start_date }}<br>
+          Fin: {{ folder.end_date }}<br>
+          {% for img in folder.images.all %}
+            <img src="{{ img.image.url }}" style="height:40px; margin-right:4px;">
+          {% endfor %}
+        </td>
         <td>
           <button type="button" class="btn btn-sm btn-warning edit-btn" data-mode="edit">Editar</button>
           <button type="button" class="btn btn-sm btn-danger delete-btn">Eliminar</button>

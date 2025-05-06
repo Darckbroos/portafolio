@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-06$7p+688^u@_a-ts5qjv^&o87*#wqplq5%cwk1mr&%^^0pgd(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', "portafolio-production-d698.up.railway.app",]
 
 
 # Application definition
@@ -156,3 +156,8 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://portafolio-production-d698.up.railway.app",
+]

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Skill, Experience, Project,Folder
+from .models import Skill, Experience, Project,Folder, FolderImage
 from .forms import FolderForm,CustomUserCreationForm
 from .serializers import FolderSerializer
 from rest_framework import viewsets
@@ -17,9 +17,11 @@ def home(request):
 
 # Lista y creación
 def folder_list(request):
-    form = FolderForm(request.POST or None)
+    form = FolderForm(request.POST or None, request.FILES or None)
     if form.is_valid():
-        form.save()
+        folder = form.save()
+        for file in request.FILES.getlist('images'):
+            FolderImage.objects.create(folder=folder, image=file)
         return redirect('folder_list')
     folders = Folder.objects.order_by('-created_at')
     return render(request, 'folder_list.html', {'form': form, 'folders': folders})
@@ -27,9 +29,11 @@ def folder_list(request):
 # Edición
 def folder_edit(request, pk):
     folder = get_object_or_404(Folder, pk=pk)
-    form = FolderForm(request.POST or None, instance=folder)
+    form = FolderForm(request.POST or None, request.FILES or None, instance=folder)
     if form.is_valid():
-        form.save()
+        folder = form.save()
+        for file in request.FILES.getlist('images'):
+            FolderImage.objects.create(folder=folder, image=file)
         return redirect('folder_list')
     return render(request, 'folder_edit.html', {'form': form, 'folder': folder})
 

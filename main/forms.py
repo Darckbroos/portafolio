@@ -4,15 +4,26 @@ from django.contrib.auth.models import User
 import re
 
 
+class MultiFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
 class FolderForm(forms.ModelForm):
+    # campo extra para subir varias imágenes
+    images = forms.FileField(
+        widget=MultiFileInput(attrs={'class': 'form-control', 'multiple': True}),
+        required=False,
+        label="Imágenes"
+    )
+
     class Meta:
         model = Folder
-        fields = ['name', 'description']
+        fields = ['name', 'description', 'start_date', 'end_date']
         widgets = {
             'name': forms.TextInput(attrs={'class':'form-control'}),
             'description': forms.Textarea(attrs={'class':'form-control', 'rows':3}),
+            'start_date': forms.DateInput(attrs={'class':'form-control', 'type':'date'}),
+            'end_date':   forms.DateInput(attrs={'class':'form-control', 'type':'date'}),
         }
-
 
 class CustomUserCreationForm(forms.ModelForm):
     username = forms.CharField(
