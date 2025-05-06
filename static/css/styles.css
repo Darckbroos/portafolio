@@ -4,15 +4,12 @@
 :root {
   --bg-light:       #ffffff;
   --fg-light:       #000000;
-  --primary-light:  #0dcaf0;
 
   --bg-dark:        #222222;
   --fg-dark:        #ffffff;
-  --primary-dark:   #343a40;
 
   --bg-matrix:      #000000;
-  --fg-matrix:      #00ff00;
-  --primary-matrix: #198754;
+  --fg-matrix:      #f7f7f7;
 }
 
 /*──────────────────────────────────────────────────────────
