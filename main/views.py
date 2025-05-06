@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.views import LogoutView
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 
 def home(request):
     return render(request, 'home.html', {
@@ -18,12 +19,15 @@ def home(request):
 # Lista y creación
 def folder_list(request):
     form = FolderForm(request.POST or None, request.FILES or None)
-    if form.is_valid():
-        folder = form.save()
-        for file in request.FILES.getlist('images'):
-            FolderImage.objects.create(folder=folder, image=file)
-        return redirect('folder_list')
-    folders = Folder.objects.order_by('-created_at')
+    if request.method == 'POST':
+        if form.is_valid():
+            folder = form.save()
+            # aquí guardas todas las imágenes subidas
+            for f in request.FILES.getlist('images'):
+                FolderImage.objects.create(folder=folder, image=f)
+            return redirect('folder_list')
+        # si no es válido, caerá al final y mostrará los errores
+    folders = Folder.objects.prefetch_related('images').order_by('-created_at')
     return render(request, 'folder_list.html', {'form': form, 'folders': folders})
 
 # Edición
@@ -49,6 +53,7 @@ def folder_delete(request, pk):
 class FolderViewSet(viewsets.ModelViewSet):
     queryset = Folder.objects.order_by('-created_at')
     serializer_class = FolderSerializer
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
 
 # Registro de usuario

@@ -2,54 +2,73 @@
 {% block content %}
 <div class="container">
   <h2>Carpetas</h2>
-  <form method="post" enctype="multipart/form-data">{% csrf_token %}
-    <div class="mb-3">
-      {{ form.name.label_tag }}
-      {{ form.name }}
+  {# — Mostrar errores si el formulario no valida — #}
+  {% if form.errors %}
+    <div class="alert alert-danger">
+      <ul class="mb-0">
+        {# Errores por campo #}
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+        {# Errores generales #}
+        {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
     </div>
+  {% endif %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.name.label_tag }} {{ form.name }}
+    {{ form.description.label_tag }} {{ form.description }}
+    {{ form.start_date.label_tag }} {{ form.start_date }}
+    {{ form.end_date.label_tag }}   {{ form.end_date }}
     <div class="mb-3">
-      {{ form.description.label_tag }}
-      {{ form.description }}
-    </div>
-    <div class="mb-3">
-      {{ form.start_date.label_tag }}
-      {{ form.start_date }}
-    </div>
-    <div class="mb-3">
-      {{ form.end_date.label_tag }}
-      {{ form.end_date }}
-    </div>
-    <div class="mb-3">
-      {{ form.images.label_tag }}
-      {{ form.images }}
+      <label for="id_images">Imágenes</label>
+      <input type="file" name="images" id="id_images" class="form-control" multiple>
     </div>
     <button type="submit" class="btn btn-primary mt-2">Crear Carpeta</button>
   </form>
 
   <hr>
-  <table class="table mt-3" id="folder-table">
+  <table id="folder-table" class="table mt-3">
     <thead>
       <tr>
         <th>Nombre</th>
         <th>Descripción</th>
+        <th>Info</th>
         <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
       {% for folder in folders %}
-      <tr data-id="{{ folder.id }}">
+      <tr
+        data-id="{{ folder.id }}"
+        data-start="{{ folder.start_date|default:'' }}"
+        data-end="{{ folder.end_date|default:'' }}"
+      >
         <td class="name">{{ folder.name }}</td>
         <td class="description">{{ folder.description }}</td>
-        <td>
+        <td class="info">
           Inicio: {{ folder.start_date }}<br>
-          Fin: {{ folder.end_date }}<br>
+          Fin:    {{ folder.end_date }}<br>
           {% for img in folder.images.all %}
-            <img src="{{ img.image.url }}" style="height:40px; margin-right:4px;">
+            <img
+              src="{{ img.image.url }}"
+              data-img-id="{{ img.id }}"
+              style="height:40px;margin:2px;"
+            >
           {% endfor %}
         </td>
         <td>
-          <button type="button" class="btn btn-sm btn-warning edit-btn" data-mode="edit">Editar</button>
-          <button type="button" class="btn btn-sm btn-danger delete-btn">Eliminar</button>
+          <button class="btn btn-sm btn-warning edit-btn" data-mode="edit">
+            Editar
+          </button>
+          <button class="btn btn-sm btn-danger delete-btn">
+            Eliminar
+          </button>
         </td>
       </tr>
       {% endfor %}
@@ -58,82 +77,121 @@
 </div>
 
 <script>
-// CSRF token helper
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    document.cookie.split(';').forEach(cookie => {
-      cookie = cookie.trim();
-      if (cookie.startsWith(name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-      }
+  // helper CSRF
+  function getCookie(name) {
+    let cookieValue = null;
+    document.cookie?.split(';').forEach(c => {
+      c = c.trim();
+      if(c.startsWith(name+'=')) cookieValue = decodeURIComponent(c.slice(name.length+1));
     });
+    return cookieValue;
   }
-  return cookieValue;
-}
-const csrfToken = getCookie('csrftoken');
-
-// Event delegation for edit and delete
-const table = document.getElementById('folder-table');
-table.addEventListener('click', function(e) {
-  const btn = e.target;
-  const row = btn.closest('tr');
-  const id = row.dataset.id;
-
-  // Delete
-  if (btn.classList.contains('delete-btn')) {
-    fetch(`/api/folders/${id}/`, {
-      method: 'DELETE', headers: {'X-CSRFToken': csrfToken}
-    }).then(res => { if (res.ok) row.remove(); });
-  }
-
-  // Edit / Save
-  if (btn.classList.contains('edit-btn')) {
-    const mode = btn.dataset.mode;
-    const nameCell = row.querySelector('.name');
-    const descCell = row.querySelector('.description');
-
-    if (mode === 'edit') {
-      // Switch to save mode
-      const currName = nameCell.textContent.trim();
-      const currDesc = descCell.textContent.trim();
-      nameCell.innerHTML = `<input class='form-control name-input' value='${currName}'>`;
-      descCell.innerHTML = `<textarea class='form-control desc-input' rows='2'>${currDesc}</textarea>`;
-      btn.textContent = 'Guardar';
-      btn.dataset.mode = 'save';
-    } else {
-      // Save changes
-      const newName = row.querySelector('.name-input').value.trim();
-      const newDesc = row.querySelector('.desc-input').value.trim();
-      if (!newName) {
-        alert('El nombre no puede estar vacío');
-        return;
-      }
-      fetch(`/api/folders/${id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken
-        },
-        body: JSON.stringify({ name: newName, description: newDesc })
-      })
-      .then(res => {
-        if (!res.ok) return res.json().then(err => { throw err; });
-        return res.json();
-      })
-      .then(data => {
-        nameCell.textContent = data.name;
-        descCell.textContent = data.description;
-        btn.textContent = 'Editar';
-        btn.dataset.mode = 'edit';
-      })
-      .catch(err => {
+  const csrfToken = getCookie('csrftoken');
+  
+  document.getElementById('folder-table').addEventListener('click', async e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+  
+    const row = btn.closest('tr');
+    const id  = row.dataset.id;
+  
+    // —— ELIMINAR ——
+    if (btn.classList.contains('delete-btn')) {
+      if (!confirm('¿Seguro que quieres eliminar esta carpeta?')) return;
+      try {
+        const res = await fetch(`/api/folders/${id}/`, {
+          method: 'DELETE',
+          headers: {'X-CSRFToken': csrfToken},
+        });
+        if (res.ok) {
+          row.remove();
+        } else {
+          console.error('DELETE falló', res.status, res.statusText);
+          alert('No se pudo eliminar. Revisa la consola.');
+        }
+      } catch(err) {
         console.error(err);
-        alert('Error al actualizar. Ver consola.');
-      });
+        alert('Error de red al eliminar.');
+      }
+      return;
     }
-  }
-});
-</script>
+  
+    // —— EDITAR / GUARDAR ——
+    if (btn.classList.contains('edit-btn')) {
+      const mode = btn.dataset.mode;
+      const nameCell = row.querySelector('.name');
+      const descCell = row.querySelector('.description');
+      const infoCell = row.querySelector('.info');
+  
+      if (mode === 'edit') {
+        // cambias a inputs
+        const currName = nameCell.textContent.trim();
+        const currDesc = descCell.textContent.trim();
+        const currStart= row.dataset.start || '';
+        const currEnd  = row.dataset.end   || '';
+        nameCell.innerHTML = `<input class="form-control name-input" value="${currName}">`;
+        descCell.innerHTML = `<textarea class="form-control desc-input" rows="2">${currDesc}</textarea>`;
+        infoCell.innerHTML = `
+          <label>Inicio:</label>
+          <input type="date" class="form-control start-input" value="${currStart}">
+          <label>Fin:</label>
+          <input type="date" class="form-control end-input"   value="${currEnd}">
+          <label>Agregar imágenes:</label>
+          <input type="file" class="form-control new-images-input" multiple>
+          <div><strong>Marcar para eliminar:</strong><br>
+            ${Array.from(row.querySelectorAll('img[data-img-id]'))
+              .map(img=>`
+                <div style="display:inline-block;text-align:center;margin:4px">
+                  ${img.outerHTML}<br>
+                  <input type="checkbox" class="del-img-checkbox" value="${img.dataset.imgId}">
+                </div>`).join('')}
+          </div>`;
+        btn.textContent = 'Guardar';
+        btn.dataset.mode = 'save';
+      } else {
+        // guardas cambios
+        const fd = new FormData();
+        fd.append('name',        row.querySelector('.name-input').value);
+        fd.append('description', row.querySelector('.desc-input').value);
+        fd.append('start_date',  row.querySelector('.start-input').value);
+        fd.append('end_date',    row.querySelector('.end-input').value);
+        // imágenes a eliminar
+        row.querySelectorAll('.del-img-checkbox:checked')
+           .forEach(cb => fd.append('remove_images', cb.value));
+        // imágenes nuevas
+        for (let f of row.querySelector('.new-images-input').files) {
+          fd.append('image_files', f);
+        }
+        try {
+          const res = await fetch(`/api/folders/${id}/`, {
+            method: 'PATCH',
+            headers: {'X-CSRFToken': csrfToken},
+            body: fd
+          });
+          if (!res.ok) {
+            console.error(await res.json());
+            return alert('Error al actualizar. Mira la consola.');
+          }
+          const data = await res.json();
+          // refrescas la fila
+          nameCell.textContent = data.name;
+          descCell.textContent = data.description;
+          row.dataset.start = data.start_date||'';
+          row.dataset.end   = data.end_date  ||'';
+          infoCell.innerHTML = `
+            Inicio: ${data.start_date||''}<br>
+            Fin:    ${data.end_date  ||''}<br>
+            ${data.images.map(i=>`<img src="${i.image}" style="height:40px;margin:2px;">`).join('')}
+          `;
+          btn.textContent = 'Editar';
+          btn.dataset.mode = 'edit';
+        } catch(err) {
+          console.error(err);
+          alert('Error de red al guardar.');
+        }
+      }
+    }
+  });
+  </script>
 
 {% endblock %}

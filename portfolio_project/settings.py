@@ -150,14 +150,24 @@ LOGOUT_REDIRECT_URL = 'home'
 
 
 
-STORAGES = {
-    # ...
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
-
-
 CSRF_TRUSTED_ORIGINS = [
     "https://portafolio-production-d698.up.railway.app",
 ]
+
+
+MEDIA_URL = '/media/'                      # URL pública
+MEDIA_ROOT = BASE_DIR / 'media'            # carpeta física donde se guardan
+
+STORAGES = {
+    # storage por defecto para FileField e ImageField
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        'OPTIONS': {
+            'location': MEDIA_ROOT,
+        },
+    },
+    # storage para tus archivos estáticos
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}

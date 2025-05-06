@@ -8,13 +8,7 @@ class MultiFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
 
 class FolderForm(forms.ModelForm):
-    # campo extra para subir varias imágenes
-    images = forms.FileField(
-        widget=MultiFileInput(attrs={'class': 'form-control', 'multiple': True}),
-        required=False,
-        label="Imágenes"
-    )
-
+    
     class Meta:
         model = Folder
         fields = ['name', 'description', 'start_date', 'end_date']
