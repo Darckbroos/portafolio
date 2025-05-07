@@ -8,7 +8,6 @@ from .views import (
     FolderViewSet,
     register,
     welcome,
-    contacto,
     CustomLogoutView,
 )
 from rest_framework import routers
@@ -27,7 +26,6 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='auth/login.html'), name='login'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
     path('welcome/', welcome, name='welcome'),
-    path('contact/', contacto, name='contact')
 ]
 
 urlpatterns += router.urls

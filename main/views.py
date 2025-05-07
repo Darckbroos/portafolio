@@ -88,7 +88,3 @@ class CustomLogoutView(LogoutView):
         # Llama al post para procesar logout en GET
         return self.post(request, *args, **kwargs)
     
-# Registro de usuario
-def contacto(request):
-    
-    return render(request, 'contacto.html')
