@@ -18,10 +18,7 @@ def home(request):
         experiences = []
         projects = []
 
-    return render(request, 'home.html', {
-        'skills': skills,
-        'experiences': experiences,
-        'projects': projects,
+    return HttpResponse("¡Portafolio desplegado correctamente! 🎉")
     })
 
 
