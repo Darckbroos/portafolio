@@ -23,10 +23,10 @@ load_dotenv()
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-06$7p+688^u@_a-ts5qjv^&o87*#wqplq5%cwk1mr&%^^0pgd('
+SECRET_KEY = os.getenv('SECRET_KEY', 'clave-insegura-local')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*', "portafolio-production-d698.up.railway.app",]
 
@@ -81,8 +81,7 @@ WSGI_APPLICATION = 'portfolio_project.wsgi.application'
 
 # Sólo reconozca la variable si viene definida (p.ej. en Production)
 DATABASE_URL = os.getenv('DATABASE_URL')
-print(DATABASE_URL)
-if DATABASE_URL:
+if os.getenv('DATABASE_URL'):
     # En Railway, DATABASE_URL apunta a postgres.railway.internal
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
