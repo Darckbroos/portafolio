@@ -11,9 +11,13 @@ from .views import (
     CustomLogoutView,
 )
 from rest_framework import routers
+from django.http import HttpResponse
 
 router = routers.DefaultRouter()
 router.register(r'api/folders', FolderViewSet, basename='api-folders')
+
+def health_check(request):
+    return HttpResponse("OK", status=200)
 
 urlpatterns = [
     path('', home, name='home'),
@@ -26,6 +30,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='auth/login.html'), name='login'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
     path('welcome/', welcome, name='welcome'),
+    path("healthz/", health_check),
 ]
 
 urlpatterns += router.urls
