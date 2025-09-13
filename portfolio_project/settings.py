@@ -1,34 +1,23 @@
-"""
-Django settings for portfolio_project project.
-"""
-
 from pathlib import Path
 import os
 
-# Opcional: dotenv para leer .env en local/producción
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except Exception:
     pass
 
-# Opcional: dj_database_url para Postgres cuando DATABASE_URL esté definido
 try:
     import dj_database_url
 except Exception:
     dj_database_url = None
 
-# --- Paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --- Seguridad y modo
 SECRET_KEY = os.getenv("SECRET_KEY", "cambia_esta_clave_larga_unica")
 DEBUG = os.getenv("DEBUG", "0") == "1"
-
-# ALLOWED_HOSTS desde .env: "portfolio.fixpc.cl,173.249.33.19,localhost"
 ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 
-# CSRF_TRUSTED_ORIGINS desde .env, o derivado de hosts comunes
 _csrf_env = os.getenv("CSRF_TRUSTED_ORIGINS", "")
 if _csrf_env.strip():
     CSRF_TRUSTED_ORIGINS = [u.strip() for u in _csrf_env.split(",") if u.strip()]
@@ -38,7 +27,6 @@ else:
         if h and h not in ("localhost", "127.0.0.1"):
             CSRF_TRUSTED_ORIGINS.extend([f"http://{h}", f"https://{h}"])
 
-# --- Apps
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -50,7 +38,6 @@ INSTALLED_APPS = [
     "rest_framework",
 ]
 
-# --- Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -81,29 +68,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "portfolio_project.wsgi.application"
 
-# --- Base de datos
-# Por defecto: SQLite. Si DATABASE_URL existe y NO es sqlite, usa dj_database_url.
 db_url = os.getenv("DATABASE_URL", "").strip()
 if db_url and not db_url.lower().startswith("sqlite"):
     if dj_database_url is None:
-        # Fallback a sqlite si no está instalado dj_database_url
-        DATABASES = {
-            "default": {
-                "ENGINE": "django.db.backends.sqlite3",
-                "NAME": BASE_DIR / "db.sqlite3",
-            }
-        }
+        DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3"}}
     else:
         DATABASES = {"default": dj_database_url.parse(db_url, conn_max_age=600)}
 else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+    DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3"}}
 
-# --- Password validators
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -111,17 +84,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# --- Localización
 LANGUAGE_CODE = "es-la"
 TIME_ZONE = "America/Santiago"
 USE_I18N = True
 USE_TZ = True
 
-# --- Estáticos y media
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "static_root"
-
-# incluir carpeta /static del proyecto solo si existe
 _static_dir = BASE_DIR / "static"
 STATICFILES_DIRS = [_static_dir] if _static_dir.exists() else []
 
@@ -129,17 +98,11 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-        "OPTIONS": {"location": MEDIA_ROOT},
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage", "OPTIONS": {"location": MEDIA_ROOT}},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# --- Auth redirects
 LOGIN_REDIRECT_URL = "welcome"
 LOGOUT_REDIRECT_URL = "home"

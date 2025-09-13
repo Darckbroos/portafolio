@@ -9,10 +9,16 @@ from django.contrib.auth.views import LogoutView
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 
 def home(request):
-    return render(request, 'home.html', {
-        'skills': Skill.objects.all(),
-        'experiences': Experience.objects.all().order_by('-start_date'),
-        'projects': Project.objects.all(),
+    try:
+        skills = Skill.objects.all()
+        experiences = Experience.objects.all().order_by('-start_date')
+        projects = Project.objects.all()
+    except Exception:
+        skills = []
+        experiences = []
+        projects = []
+
+    return HttpResponse("¡Portafolio desplegado correctamente! 🎉")
     })
 
 
